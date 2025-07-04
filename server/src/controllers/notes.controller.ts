@@ -34,7 +34,8 @@ export const updateNote: RequestHandler = async (req, res) => {
       { new: true }
     );
     if (!note) {
-      return res.status(404).json({ message: "Note not found" });
+      res.status(404).json({ message: "Note not found" });
+      return;
     }
     res.json(note);
   } catch (error) {
@@ -48,7 +49,8 @@ export const deleteNote: RequestHandler = async (req, res) => {
     const { id } = req.params;
     const note = await Note.findByIdAndDelete(id);
     if (!note) {
-      return res.status(404).json({ message: "Note not found" });
+      res.status(404).json({ message: "Note not found" });
+      return;
     }
     res.status(204).send();
   } catch (error) {
