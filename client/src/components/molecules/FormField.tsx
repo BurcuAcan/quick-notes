@@ -17,7 +17,7 @@ interface FormFieldProps {
 
 const FormField: React.FC<FormFieldProps> = ({ label, id, type = 'text', value, onChange, required = false, isTextArea = false, rows = 4 }) => {
   return (
-    <div style={{ marginBottom: '15px' }}>
+    <div className="mb-4">
       <Label htmlFor={id}>{label}:</Label>
       {isTextArea ? (
         <textarea
@@ -26,7 +26,7 @@ const FormField: React.FC<FormFieldProps> = ({ label, id, type = 'text', value, 
           onChange={onChange}
           required={required}
           rows={rows}
-          style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
+          className="w-full p-2 rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
         ></textarea>
       ) : (
         <Input

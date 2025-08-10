@@ -6,9 +6,9 @@ interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
   children: React.ReactNode;
 }
 
-const Label: React.FC<LabelProps> = ({ children, style, ...props }) => {
+const Label: React.FC<LabelProps> = ({ children, ...props }) => {
   return (
-    <label style={{ display: 'block', marginBottom: '5px', ...style }} {...props}>
+    <label className="block mb-1 text-gray-700 dark:text-gray-300" {...props}>
       {children}
     </label>
   );

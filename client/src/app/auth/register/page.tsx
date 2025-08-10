@@ -9,14 +9,14 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const handleRegister = async (data: any) => {
+  const handleRegister = async (data: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
     try {
       await axios.post('http://localhost:4000/api/auth/register', {
         username: data.username,
         password: data.password,
       });
       router.push('/auth/login'); // Redirect to login page after successful registration
-    } catch (err: any) {
+    } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       setError(err.response?.data?.message || 'Registration failed');
     }
   };

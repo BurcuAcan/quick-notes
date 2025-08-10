@@ -35,25 +35,25 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete, onSave, onC
   };
 
   return (
-    <div style={{ border: '1px solid #eee', padding: '15px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+    <div className="border border-gray-200 p-4 rounded-lg shadow-md bg-white text-gray-900 dark:border-gray-700 dark:shadow-lg dark:bg-gray-800 dark:text-gray-100">
       {isEditing ? (
         <>
           <Input
             type="text"
             value={editedTitle}
             onChange={(e) => setEditedTitle(e.target.value)}
-            style={{ marginBottom: '10px' }}
+            className="mb-2"
           />
           <textarea
             value={editedContent}
             onChange={(e) => setEditedContent(e.target.value)}
             rows={4}
-            style={{ width: '100%', padding: '8px', marginBottom: '10px', borderRadius: '4px', border: '1px solid #ddd' }}
+            className="w-full p-2 mb-2 rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
           ></textarea>
-          <Button onClick={handleSave} style={{ backgroundColor: '#28a745', marginRight: '5px' }}>
+          <Button onClick={handleSave} className="bg-green-600 mr-1 dark:bg-green-700 dark:text-gray-100">
             Save
           </Button>
-          <Button onClick={onCancelEdit} style={{ backgroundColor: '#6c757d' }}>
+          <Button onClick={onCancelEdit} className="bg-gray-500 dark:bg-gray-600 dark:text-gray-100">
             Cancel
           </Button>
         </>
@@ -61,10 +61,10 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete, onSave, onC
         <>
           <h3>{note.title}</h3>
           <p>{note.content}</p>
-          <Button onClick={() => onEdit(note)} style={{ backgroundColor: '#ffc107', color: 'black', marginRight: '5px' }}>
+          <Button onClick={() => onEdit(note)} className="bg-yellow-500 text-black mr-1 dark:bg-yellow-600 dark:text-gray-100">
             Edit
           </Button>
-          <Button onClick={() => onDelete(note._id)} style={{ backgroundColor: '#dc3545' }}>
+          <Button onClick={() => onDelete(note._id)} className="bg-red-600 dark:bg-red-700 dark:text-gray-100">
             Delete
           </Button>
         </>

@@ -20,7 +20,7 @@ interface NoteListProps {
 
 const NoteList: React.FC<NoteListProps> = ({ notes, onEdit, onDelete, onSave, onCancelEdit, editingNoteId }) => {
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '20px' }}>
+    <div className="grid grid-cols-auto-fill-minmax-250px gap-5">
       {notes.length === 0 ? (
         <p>No notes yet. Add one above!</p>
       ) : (

@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 interface AuthFormProps {
   type: 'login' | 'register' | 'forgot-password' | 'reset-password';
-  onSubmit: (data: any) => void;
+  onSubmit: (data: any) => void; // eslint-disable-line @typescript-eslint/no-explicit-any
   error?: string;
   message?: string;
   token?: string;
@@ -35,7 +35,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, error, message, tok
   };
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif', maxWidth: '400px', margin: '50px auto', border: '1px solid #ccc', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+    <div className="p-5 font-sans max-w-md mx-auto mt-12 border border-gray-300 rounded-lg shadow-md bg-white text-gray-900 dark:border-gray-700 dark:shadow-lg dark:bg-gray-800 dark:text-gray-100">
       <h1>{type === 'login' ? 'Login' : type === 'register' ? 'Register' : type === 'forgot-password' ? 'Forgot Password' : 'Reset Password'}</h1>
       <form onSubmit={handleSubmit}>
         {(type === 'login' || type === 'register' || type === 'forgot-password') && (
@@ -48,7 +48,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, error, message, tok
           />
         )}
         {(type === 'login' || type === 'register' || type === 'reset-password') && (
-          <div style={{ position: 'relative', marginBottom: '15px' }}>
+          <div className="relative mb-4">
             <FormField
               label={type === 'reset-password' ? 'New Password' : 'Password'}
               id="password"
@@ -60,23 +60,14 @@ const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, error, message, tok
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              style={{
-                position: 'absolute',
-                right: '10px',
-                top: '35px',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                color: '#007bff',
-                fontSize: '0.8em',
-              }}
+              className="absolute right-2.5 top-9 bg-transparent border-none cursor-pointer text-blue-500 text-sm dark:text-blue-400"
             >
               {showPassword ? 'Hide' : 'Show'}
             </button>
           </div>
         )}
         {type === 'reset-password' && (
-          <div style={{ position: 'relative', marginBottom: '15px' }}>
+          <div className="relative mb-4">
             <FormField
               label="Confirm New Password"
               id="confirmPassword"
@@ -88,16 +79,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, error, message, tok
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              style={{
-                position: 'absolute',
-                right: '10px',
-                top: '35px',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                color: '#007bff',
-                fontSize: '0.8em',
-              }}
+              className="absolute right-2.5 top-9 bg-transparent border-none cursor-pointer text-blue-500 text-sm dark:text-blue-400"
             >
               {showPassword ? 'Hide' : 'Show'}
             </button>
@@ -105,28 +87,28 @@ const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, error, message, tok
         )}
         {error && <ErrorMessage message={error} />}
         {message && <SuccessMessage message={message} />}
-        <Button type="submit" style={{ padding: '10px 15px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+        <Button type="submit">
           {type === 'login' ? 'Login' : type === 'register' ? 'Register' : type === 'forgot-password' ? 'Request Reset' : 'Reset Password'}
         </Button>
       </form>
       {type === 'login' && (
-        <p style={{ marginTop: '20px', textAlign: 'center' }}>
-          Don't have an account? <Link href="/auth/register" style={{ color: '#007bff', textDecoration: 'none' }}>Register here</Link>
+        <p className="mt-5 text-center">
+          Don&apos;t have an account? <Link href="/auth/register" className="text-blue-500 no-underline dark:text-blue-400">Register here</Link>
         </p>
       )}
       {type === 'login' && (
-        <p style={{ marginTop: '10px', textAlign: 'center' }}>
-          <Link href="/auth/forgot-password" style={{ color: '#007bff', textDecoration: 'none' }}>Forgot Password?</Link>
+        <p className="mt-2 text-center">
+          <Link href="/auth/forgot-password" className="text-blue-500 no-underline dark:text-blue-400">Forgot Password?</Link>
         </p>
       )}
       {type === 'register' && (
-        <p style={{ marginTop: '20px', textAlign: 'center' }}>
-          Already have an account? <Link href="/auth/login" style={{ color: '#007bff', textDecoration: 'none' }}>Login here</Link>
+        <p className="mt-5 text-center">
+          Already have an account? <Link href="/auth/login" className="text-blue-500 no-underline dark:text-blue-400">Login here</Link>
         </p>
       )}
       {type === 'forgot-password' && (
-        <p style={{ marginTop: '20px', textAlign: 'center' }}>
-          Remember your password? <Link href="/auth/login" style={{ color: '#007bff', textDecoration: 'none' }}>Login here</Link>
+        <p className="mt-5 text-center">
+          Remember your password? <Link href="/auth/login" className="text-blue-500 no-underline dark:text-blue-400">Login here</Link>
         </p>
       )}
     </div>

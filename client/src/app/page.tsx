@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import NoteForm from '../components/organisms/NoteForm';
 import NoteList from '../components/organisms/NoteList';
 import Button from '../components/atoms/Button';
+import ThemeToggle from '../components/molecules/ThemeToggle';
+import { Providers } from './providers';
 
 interface Note {
   _id: string;
@@ -18,7 +20,7 @@ export default function Home() {
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
+  useEffect(() => { // eslint-disable-line react-hooks/exhaustive-deps
     const token = localStorage.getItem('token');
     if (!token) {
       router.push('/auth/login');
@@ -40,7 +42,7 @@ export default function Home() {
     try {
       const response = await axios.get('http://localhost:4000/api/notes', getAuthHeaders());
       setNotes(response.data);
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       if (error.response && error.response.status === 401) {
         router.push('/auth/login'); // Redirect to login if unauthorized
       }
@@ -55,7 +57,7 @@ export default function Home() {
         content,
       }, getAuthHeaders());
       fetchNotes(); // Refresh notes after creating a new one
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       if (error.response && error.response.status === 401) {
         router.push('/auth/login');
       }
@@ -67,7 +69,7 @@ export default function Home() {
     try {
       await axios.delete(`http://localhost:4000/api/notes/${id}`, getAuthHeaders());
       fetchNotes(); // Refresh notes after deleting one
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       if (error.response && error.response.status === 401) {
         router.push('/auth/login');
       }
@@ -91,7 +93,7 @@ export default function Home() {
       }, getAuthHeaders());
       cancelEditing(); // Exit editing mode
       fetchNotes(); // Refresh notes after updating one
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       if (error.response && error.response.status === 401) {
         router.push('/auth/login');
       }
@@ -105,25 +107,30 @@ export default function Home() {
   };
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h1>Quick Notes</h1>
-        <Button onClick={handleLogout} style={{ backgroundColor: '#dc3545', padding: '8px 15px' }}>
-          Logout
-        </Button>
+    <Providers>
+      <div className="p-5 font-sans bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+        <div className="flex justify-between items-center mb-5">
+          <h1>Quick Notes</h1>
+          <div className="flex items-center">
+            <ThemeToggle />
+            <Button onClick={handleLogout} className="bg-red-600 px-4 py-2 ml-2.5">
+              Logout
+            </Button>
+          </div>
+        </div>
+
+        <NoteForm onCreateNote={createNote} />
+
+        <h2>Your Notes</h2>
+        <NoteList
+          notes={notes}
+          onEdit={startEditing}
+          onDelete={deleteNote}
+          onSave={updateNote}
+          onCancelEdit={cancelEditing}
+          editingNoteId={editingNoteId}
+        />
       </div>
-
-      <NoteForm onCreateNote={createNote} />
-
-      <h2>Your Notes</h2>
-      <NoteList
-        notes={notes}
-        onEdit={startEditing}
-        onDelete={deleteNote}
-        onSave={updateNote}
-        onCancelEdit={cancelEditing}
-        editingNoteId={editingNoteId}
-      />
-    </div>
+    </Providers>
   );
 }

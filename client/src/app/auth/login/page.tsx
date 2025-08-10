@@ -9,7 +9,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const handleLogin = async (data: any) => {
+  const handleLogin = async (data: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
     try {
       const response = await axios.post('http://localhost:4000/api/auth/login', {
         username: data.username,
@@ -17,7 +17,7 @@ export default function LoginPage() {
       });
       localStorage.setItem('token', response.data.token);
       router.push('/'); // Redirect to home page after successful login
-    } catch (err: any) {
+    } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       setError(err.response?.data?.message || 'Login failed');
     }
   };

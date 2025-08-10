@@ -20,7 +20,7 @@ const NoteForm: React.FC<NoteFormProps> = ({ onCreateNote }) => {
   };
 
   return (
-    <div style={{ marginBottom: '20px', border: '1px solid #ccc', padding: '15px', borderRadius: '8px' }}>
+    <div className="mb-5 border border-gray-300 p-4 rounded-lg bg-white text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
       <h2>Add New Note</h2>
       <form onSubmit={handleSubmit}>
         <FormField
@@ -39,7 +39,7 @@ const NoteForm: React.FC<NoteFormProps> = ({ onCreateNote }) => {
           rows={4}
           required
         />
-        <Button type="submit" style={{ padding: '10px 15px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+        <Button type="submit">
           Add Note
         </Button>
       </form>

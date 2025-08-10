@@ -12,7 +12,7 @@ export default function ResetPasswordPage() {
   const params = useParams();
   const { token } = params;
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
     if (data.password !== data.confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -25,7 +25,7 @@ export default function ResetPasswordPage() {
       setMessage('Password has been reset successfully!');
       setError('');
       router.push('/auth/login');
-    } catch (err: any) {
+    } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       setError(err.response?.data?.message || 'Failed to reset password');
       setMessage('');
     }

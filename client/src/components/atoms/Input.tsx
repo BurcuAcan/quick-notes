@@ -2,14 +2,10 @@
 
 import React from 'react';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  // You can add custom props here if needed
-}
-
-const Input: React.FC<InputProps> = ({ style, ...props }) => {
+const Input: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = ({ ...props }) => {
   return (
     <input
-      style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd', ...style }}
+      className="w-full p-2 rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
       {...props}
     />
   );
