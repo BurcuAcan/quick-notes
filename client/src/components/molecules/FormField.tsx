@@ -3,6 +3,7 @@
 import React from 'react';
 import Input from '../atoms/Input';
 import Label from '../atoms/Label';
+import Textarea from '../atoms/Textarea';
 
 interface FormFieldProps {
   label: string;
@@ -18,16 +19,16 @@ interface FormFieldProps {
 const FormField: React.FC<FormFieldProps> = ({ label, id, type = 'text', value, onChange, required = false, isTextArea = false, rows = 4 }) => {
   return (
     <div className="mb-4">
-      <Label htmlFor={id}>{label}:</Label>
+      <Label htmlFor={id} className="block mb-1 font-medium">{label}:</Label>
       {isTextArea ? (
-        <textarea
+        <Textarea
           id={id}
           value={value}
           onChange={onChange}
           required={required}
           rows={rows}
-          className="w-full p-2 rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-        ></textarea>
+          className="w-full"
+        />
       ) : (
         <Input
           type={type}

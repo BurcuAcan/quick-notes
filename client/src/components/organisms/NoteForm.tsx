@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import FormField from '../molecules/FormField';
+import Input from '../atoms/Input';
 import Button from '../atoms/Button';
+import Textarea from '../atoms/Textarea';
 
 interface NoteFormProps {
   onCreateNote: (title: string, content: string) => void;
@@ -20,26 +21,33 @@ const NoteForm: React.FC<NoteFormProps> = ({ onCreateNote }) => {
   };
 
   return (
-    <div className="mb-5 border border-gray-300 p-4 rounded-lg bg-white text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
-      <h2>Add New Note</h2>
-      <form onSubmit={handleSubmit}>
-        <FormField
-          label="Title"
-          id="newNoteTitle"
-          value={newNoteTitle}
-          onChange={(e) => setNewNoteTitle(e.target.value)}
-          required
-        />
-        <FormField
-          label="Content"
-          id="newNoteContent"
-          value={newNoteContent}
-          onChange={(e) => setNewNoteContent(e.target.value)}
-          isTextArea
-          rows={4}
-          required
-        />
-        <Button type="submit">
+    <div className="mb-5 border border-gray-200 p-4 rounded-lg">
+      <h2 className="text-xl font-bold mb-4">Add New Note</h2>
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <div>
+          <label htmlFor="newNoteTitle" className="block mb-1 font-medium">
+            Title:
+          </label>
+          <Input
+            id="newNoteTitle"
+            value={newNoteTitle}
+            onChange={(e) => setNewNoteTitle(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="newNoteContent" className="block mb-1 font-medium">
+            Content:
+          </label>
+          <Textarea
+            id="newNoteContent"
+            value={newNoteContent}
+            onChange={(e) => setNewNoteContent(e.target.value)}
+            rows={4}
+            required
+          />
+        </div>
+        <Button type="submit" >
           Add Note
         </Button>
       </form>

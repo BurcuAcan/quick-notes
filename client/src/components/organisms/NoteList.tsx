@@ -20,9 +20,11 @@ interface NoteListProps {
 
 const NoteList: React.FC<NoteListProps> = ({ notes, onEdit, onDelete, onSave, onCancelEdit, editingNoteId }) => {
   return (
-    <div className="grid grid-cols-auto-fill-minmax-250px gap-5">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       {notes.length === 0 ? (
-        <p>No notes yet. Add one above!</p>
+        <div className="p-4 text-center text-muted-foreground bg-card rounded-lg border border-border">
+          No notes yet. Add one above!
+        </div>
       ) : (
         notes.map((note) => (
           <NoteCard

@@ -13,6 +13,7 @@ export default function RegisterPage() {
     try {
       await axios.post('http://localhost:4000/api/auth/register', {
         username: data.username,
+        email: data.email,
         password: data.password,
       });
       router.push('/auth/login'); // Redirect to login page after successful registration

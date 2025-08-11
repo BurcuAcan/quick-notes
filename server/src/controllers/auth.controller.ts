@@ -10,10 +10,10 @@ const generateToken = (id: string) => {
 };
 
 export const registerUser = async (req: Request, res: Response) => {
-  const { username, password } = req.body;
+  const { username, email, password } = req.body;
 
   try {
-    const userExists = await User.findOne({ username });
+    const userExists = await User.findOne({ $or: [{ username }, { email }] });
 
     if (userExists) {
       return res.status(400).json({ message: 'User already exists' });
@@ -21,6 +21,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
     const user = await User.create({
       username,
+      email,
       password,
     }) as IUser & Document;
 
@@ -28,6 +29,7 @@ export const registerUser = async (req: Request, res: Response) => {
       res.status(201).json({
         _id: user._id,
         username: user.username,
+        email: user.email,
         token: generateToken(String(user._id)),
       });
     } else {

@@ -7,7 +7,7 @@ interface SuccessMessageProps {
 }
 
 const SuccessMessage: React.FC<SuccessMessageProps> = ({ message }) => {
-  return <p className="text-green-500 mt-4 dark:text-green-400">{message}</p>;
+  return <p className="text-green-500 mt-4">{message}</p>;
 };
 
 export default SuccessMessage;
