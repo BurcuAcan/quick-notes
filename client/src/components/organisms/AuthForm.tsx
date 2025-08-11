@@ -40,92 +40,96 @@ const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, error, message, tok
   };
 
   return (
-    <div className="p-5 font-sans max-w-md mx-auto mt-12 border border-gray-300 rounded-lg shadow-md">
-      <h1>{type === 'login' ? 'Login' : type === 'register' ? 'Register' : type === 'forgot-password' ? 'Forgot Password' : 'Reset Password'}</h1>
-      <form onSubmit={handleSubmit}>
-        {(type === 'login' || type === 'register' || type === 'forgot-password') && (
-          <FormField
-            label="Username"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-blue-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="w-full max-w-md p-8 rounded-2xl shadow-2xl bg-white border border-gray-100 dark:bg-gray-900 dark:border-gray-800">
+        <h1 className="text-4xl font-extrabold text-blue-600 mb-8 text-center tracking-tight drop-shadow-sm dark:text-blue-400">
+          {type === 'login' ? 'Login' : type === 'register' ? 'Register' : type === 'forgot-password' ? 'Forgot Password' : 'Reset Password'}
+        </h1>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {(type === 'login' || type === 'register' || type === 'forgot-password') && (
+            <FormField
+              label="Username"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          )}
+          {type === 'register' && (
+            <FormField
+              label="Email"
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          )}
+          {(type === 'login' || type === 'register' || type === 'reset-password') && (
+            <div className="relative">
+              <FormField
+                label={type === 'reset-password' ? 'New Password' : 'Password'}
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-2.5 top-9 bg-transparent border-none cursor-pointer text-blue-500 text-sm hover:underline dark:text-blue-300"
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
+            </div>
+          )}
+          {type === 'reset-password' && (
+            <div className="relative">
+              <FormField
+                label="Confirm New Password"
+                id="confirmPassword"
+                type={showPassword ? 'text' : 'password'}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-2.5 top-9 bg-transparent border-none cursor-pointer text-blue-500 text-sm hover:underline dark:text-blue-300"
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
+            </div>
+          )}
+          {error && <ErrorMessage message={error} />}
+          {message && <SuccessMessage message={message} />}
+          <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 transition-colors font-semibold text-lg py-2 rounded-xl shadow dark:bg-blue-700 dark:hover:bg-blue-800">
+            {type === 'login' ? 'Login' : type === 'register' ? 'Register' : type === 'forgot-password' ? 'Request Reset' : 'Reset Password'}
+          </Button>
+        </form>
+        {type === 'login' && (
+          <p className="mt-8 text-center text-gray-600 dark:text-gray-300">
+            Don&apos;t have an account? <Link href="/auth/register" className="text-blue-500 hover:underline dark:text-blue-300">Register here</Link>
+          </p>
+        )}
+        {type === 'login' && (
+          <p className="mt-2 text-center text-gray-600 dark:text-gray-300">
+            <Link href="/auth/forgot-password" className="text-blue-500 hover:underline dark:text-blue-300">Forgot Password?</Link>
+          </p>
         )}
         {type === 'register' && (
-          <FormField
-            label="Email"
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+          <p className="mt-8 text-center text-gray-600 dark:text-gray-300">
+            Already have an account? <Link href="/auth/login" className="text-blue-500 hover:underline dark:text-blue-300">Login here</Link>
+          </p>
         )}
-        {(type === 'login' || type === 'register' || type === 'reset-password') && (
-          <div className="relative mb-4">
-            <FormField
-              label={type === 'reset-password' ? 'New Password' : 'Password'}
-              id="password"
-              type={showPassword ? 'text' : 'password'} // Dynamic type
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-2.5 top-9 bg-transparent border-none cursor-pointer text-blue-500 text-sm"
-            >
-              {showPassword ? 'Hide' : 'Show'}
-            </button>
-          </div>
+        {type === 'forgot-password' && (
+          <p className="mt-8 text-center text-gray-600 dark:text-gray-300">
+            Remember your password? <Link href="/auth/login" className="text-blue-500 hover:underline dark:text-blue-300">Login here</Link>
+          </p>
         )}
-        {type === 'reset-password' && (
-          <div className="relative mb-4">
-            <FormField
-              label="Confirm New Password"
-              id="confirmPassword"
-              type={showPassword ? 'text' : 'password'} // Dynamic type
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-2.5 top-9 bg-transparent border-none cursor-pointer text-blue-500 text-sm"
-            >
-              {showPassword ? 'Hide' : 'Show'}
-            </button>
-          </div>
-        )}
-        {error && <ErrorMessage message={error} />}
-        {message && <SuccessMessage message={message} />}
-        <Button type="submit">
-          {type === 'login' ? 'Login' : type === 'register' ? 'Register' : type === 'forgot-password' ? 'Request Reset' : 'Reset Password'}
-        </Button>
-      </form>
-      {type === 'login' && (
-        <p className="mt-5 text-center">
-          Don&apos;t have an account? <Link href="/auth/register" className="text-blue-500 no-underline">Register here</Link>
-        </p>
-      )}
-      {type === 'login' && (
-        <p className="mt-2 text-center">
-          <Link href="/auth/forgot-password" className="text-blue-500 no-underline">Forgot Password?</Link>
-        </p>
-      )}
-      {type === 'register' && (
-        <p className="mt-5 text-center">
-          Already have an account? <Link href="/auth/login" className="text-blue-500 no-underline">Login here</Link>
-        </p>
-      )}
-      {type === 'forgot-password' && (
-        <p className="mt-5 text-center">
-          Remember your password? <Link href="/auth/login" className="text-blue-500 no-underline">Login here</Link>
-        </p>
-      )}
+      </div>
     </div>
   );
 };

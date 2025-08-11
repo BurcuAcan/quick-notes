@@ -109,27 +109,29 @@ export default function Home() {
   };
 
   return (
-    <div className="p-5 font-sans">
-      <div className="flex justify-between items-center mb-5">
-        <h1>Quick Notes</h1>
-        <div className="flex items-center">
-          <Button onClick={handleLogout} className="bg-red-600 px-4 py-2 ml-2.5">
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex flex-col items-center justify-start py-10">
+      <div className="w-full max-w-2xl mx-auto">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-extrabold text-blue-600 dark:text-blue-400 tracking-tight drop-shadow-sm">Quick Notes</h1>
+          <Button onClick={handleLogout} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl shadow transition-colors ml-2.5">
             Logout
           </Button>
         </div>
+        <div className="mb-8">
+          <NoteForm onCreateNote={createNote} />
+        </div>
+        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 p-6">
+          <h2 className="text-xl font-bold mb-6 text-gray-700 dark:text-gray-200">Your Notes</h2>
+          <NoteList
+            notes={notes}
+            onEdit={startEditing}
+            onDelete={deleteNote}
+            onSave={updateNote}
+            onCancelEdit={cancelEditing}
+            editingNoteId={editingNoteId}
+          />
+        </div>
       </div>
-
-      <NoteForm onCreateNote={createNote} />
-
-      <h2>Your Notes</h2>
-      <NoteList
-        notes={notes}
-        onEdit={startEditing}
-        onDelete={deleteNote}
-        onSave={updateNote}
-        onCancelEdit={cancelEditing}
-        editingNoteId={editingNoteId}
-      />
     </div>
   );
 }
