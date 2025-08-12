@@ -126,3 +126,14 @@ export const resetPassword = async (req: Request, res: Response) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const getMe = async (req: Request, res: Response) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'Not authorized' });
+  }
+  res.json({
+    _id: req.user._id,
+    username: req.user.username,
+    email: req.user.email,
+  });
+};

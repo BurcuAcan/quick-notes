@@ -1,21 +1,25 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import NoteForm from '../components/organisms/NoteForm';
 import NoteList from '../components/organisms/NoteList';
 import Button from '../components/atoms/Button';
+import NotificationBell from '../components/organisms/NotificationBell';
 
 interface Note {
   _id: string;
   title: string;
   content: string;
+  imageUrl?: string;
+  icon?: string;
 }
 
 export default function Home() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+  const [username, setUsername] = useState<string>('');
   const router = useRouter();
 
   const getAuthHeaders = () => {
@@ -27,7 +31,7 @@ export default function Home() {
     };
   };
 
-  const fetchNotes = async () => {
+  const fetchNotes = useCallback(async () => {
     try {
       const response = await axios.get('http://localhost:4000/api/notes', getAuthHeaders());
       setNotes(response.data);
@@ -38,7 +42,7 @@ export default function Home() {
       }
       console.error('Error fetching notes:', err);
     }
-  };
+  }, [router]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -46,14 +50,24 @@ export default function Home() {
       router.push('/auth/login');
     } else {
       fetchNotes();
+      // Fetch user info
+      axios.get('http://localhost:4000/api/auth/me', {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(res => {
+        setUsername(res.data.username);
+      }).catch(() => {
+        setUsername('');
+      });
     }
-  }, [router, fetchNotes]); // Added fetchNotes to dependency array
+  }, [router, fetchNotes]); // Now fetchNotes is stable
 
-  const createNote = async (title: string, content: string) => {
+  const createNote = async (title: string, content: string, imageUrl?: string, icon?: string) => {
     try {
       await axios.post('http://localhost:4000/api/notes', {
         title,
         content,
+        imageUrl,
+        icon,
       }, getAuthHeaders());
       fetchNotes(); // Refresh notes after creating a new one
     } catch (error) {
@@ -110,18 +124,31 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex flex-col items-center justify-start py-10">
-      <div className="w-full max-w-2xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-extrabold text-blue-600 dark:text-blue-400 tracking-tight drop-shadow-sm">Quick Notes</h1>
-          <Button onClick={handleLogout} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl shadow transition-colors ml-2.5">
-            Logout
-          </Button>
+      <div className="fixed top-6 right-8 z-50">
+        <NotificationBell onNoteShared={fetchNotes} />
+      </div>
+      <div className="w-full max-w-2xl mx-auto px-2 sm:px-0">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-blue-600 dark:text-blue-400 tracking-tight drop-shadow-sm mb-6 sm:mb-8">Quick Notes</h1>
+        <div className="flex flex-col mb-6 sm:mb-8">
+          <div className="flex justify-between sm:items-center gap-4 sm:gap-0 mb-4">
+            {username && (
+              <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-blue-400 via-blue-300 to-blue-200 dark:from-blue-900 dark:via-blue-800 dark:to-blue-700 rounded-xl border border-blue-300 dark:border-blue-800 shadow-lg w-fit mx-auto sm:mx-0">
+                <div className="w-8 h-8 rounded-full bg-white dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-300 font-bold text-md border-2 border-blue-400 dark:border-blue-700 shadow">
+                  {username.slice(0, 2).toUpperCase()}
+                </div>
+                <span className="font-bold text-blue-700 dark:text-blue-200 text-base ml-2">{username}</span>
+              </div>
+            )}
+            <Button onClick={handleLogout} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl shadow transition-colors w-full sm:w-auto">
+              Logout
+            </Button>
+          </div>
         </div>
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <NoteForm onCreateNote={createNote} />
         </div>
-        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 p-6">
-          <h2 className="text-xl font-bold mb-6 text-gray-700 dark:text-gray-200">Your Notes</h2>
+        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 p-4 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 text-gray-700 dark:text-gray-200">Your Notes</h2>
           <NoteList
             notes={notes}
             onEdit={startEditing}
