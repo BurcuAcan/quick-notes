@@ -22,8 +22,8 @@ export const getNotes = async (req: Request, res: Response) => {
 // POST /api/notes
 export const createNote = async (req: Request, res: Response) => {
   try {
-    const { title, content } = req.body;
-    const note = new Note({ title, content, owner: req.user._id });
+    const { title, content, imageUrl, icon } = req.body;
+    const note = new Note({ title, content, imageUrl, icon, owner: req.user._id });
     await note.save();
     res.status(201).json(note);
   } catch (error) {
@@ -144,7 +144,7 @@ export const rejectNoteShareRequest: RequestHandler = async (req, res) => {
 export const updateNote: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, content } = req.body;
+    const { title, content, imageUrl, icon } = req.body;
     const note = await Note.findById(id);
     if (!note) {
       return res.status(404).json({ message: "Note not found" });
@@ -159,6 +159,8 @@ export const updateNote: RequestHandler = async (req, res) => {
     }
     note.title = title;
     note.content = content;
+    if (imageUrl !== undefined) note.imageUrl = imageUrl;
+    if (icon !== undefined) note.icon = icon;
     await note.save();
     res.json(note);
   } catch (error) {

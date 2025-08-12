@@ -100,11 +100,13 @@ export default function Home() {
     setEditingNoteId(null);
   };
 
-  const updateNote = async (id: string, title: string, content: string) => {
+  const updateNote = async (id: string, title: string, content: string, imageUrl?: string, icon?: string) => {
     try {
       await axios.put(`http://localhost:4000/api/notes/${id}`, {
         title,
         content,
+        imageUrl,
+        icon,
       }, getAuthHeaders());
       cancelEditing(); // Exit editing mode
       fetchNotes(); // Refresh notes after updating one

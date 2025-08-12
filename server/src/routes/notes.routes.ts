@@ -10,6 +10,8 @@ import {
   acceptNoteShareRequest,
   rejectNoteShareRequest,
 } from "../controllers/notes.controller";
+import { upload, uploadImage } from "../controllers/upload.controller";
+import authMiddleware from "../middleware/authMiddleware";
 
 const router = express.Router();
 
@@ -22,5 +24,7 @@ router.post("/:id/share-request", createNoteShareRequest);
 router.get("/share-requests", listNoteShareRequests);
 router.post("/share-requests/:requestId/accept", acceptNoteShareRequest);
 router.post("/share-requests/:requestId/reject", rejectNoteShareRequest);
+// Image upload endpoint
+router.post("/upload-image", authMiddleware, upload.single("image"), uploadImage);
 
 export default router;

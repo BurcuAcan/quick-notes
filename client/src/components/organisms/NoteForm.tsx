@@ -23,8 +23,10 @@ const NoteForm: React.FC<NoteFormProps> = ({ onCreateNote }) => {
     if (imageFile) {
       const formData = new FormData();
       formData.append('image', imageFile);
+      const token = localStorage.getItem('token');
       const res = await fetch('http://localhost:4000/api/notes/upload-image', {
         method: 'POST',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : undefined,
         body: formData,
       });
       const data = await res.json();
@@ -50,6 +52,21 @@ const NoteForm: React.FC<NoteFormProps> = ({ onCreateNote }) => {
   const handleIconSelect = (selectedIcon: string) => {
     setIcon(selectedIcon);
     setIconPickerOpen(false);
+    // Insert icon at cursor position in content
+    const textarea = document.getElementById('newNoteContent') as HTMLTextAreaElement;
+    if (textarea) {
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const before = newNoteContent.slice(0, start);
+      const after = newNoteContent.slice(end);
+      const updatedContent = before + selectedIcon + after;
+      setNewNoteContent(updatedContent);
+      // Move cursor after inserted icon
+      setTimeout(() => {
+        textarea.focus();
+        textarea.selectionStart = textarea.selectionEnd = start + selectedIcon.length;
+      }, 0);
+    }
   };
 
   return (
@@ -73,23 +90,48 @@ const NoteForm: React.FC<NoteFormProps> = ({ onCreateNote }) => {
             <img src={imagePreview} alt="Preview" className="rounded max-h-48 mx-auto" />
           </div>
         )}
-        <div>
+        <div className="mb-4">
           <label htmlFor="newNoteContent" className="block mb-1 font-medium">
             Content:
           </label>
-          <Textarea
-            id="newNoteContent"
-            value={newNoteContent}
-            onChange={(e) => setNewNoteContent(e.target.value)}
-            rows={4}
-            required
-          />
+          <div className="relative">
+            <Textarea
+              id="newNoteContent"
+              value={newNoteContent}
+              onChange={(e) => setNewNoteContent(e.target.value)}
+              rows={4}
+              required
+              className="w-full border border-gray-300 dark:border-gray-700 rounded px-3 py-2 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-900"
+            />
+            <button
+              type="button"
+              className="absolute right-2 top-2 text-2xl p-1 bg-gray-100 dark:bg-gray-800 rounded hover:bg-blue-100 dark:hover:bg-blue-900"
+              onClick={() => setIconPickerOpen((open) => !open)}
+              aria-label="Pick icon"
+            >
+              {icon || "😊"}
+            </button>
+            {iconPickerOpen && (
+              <div className="absolute right-0 top-10 z-10 flex flex-wrap gap-2 bg-white dark:bg-gray-800 p-2 rounded shadow border border-gray-200 dark:border-gray-700">
+                {["😊", "⭐", "🔥", "💡", "📷", "📚", "✅", "❗", "🎉", "📝", "😂", "👍", "🙏", "🥳", "😎", "🤔", "😃", "😢", "😡", "❤️", "🚀"].map((ic) => (
+                  <button type="button" key={ic} className="text-2xl p-2 hover:bg-blue-100 dark:hover:bg-blue-900 rounded" onClick={() => handleIconSelect(ic)}>{ic}</button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-        <div>
-          <label className="block mb-1 font-medium">Image:</label>
-          <Button type="button" className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => document.getElementById('imageFile')?.click()}>
-            {imageFile ? 'Change Image' : 'Select Image'}
+        <div className="flex items-center gap-2 mt-4">
+          <Button type="submit" className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded font-semibold">
+            Add Note
           </Button>
+          <button
+            type="button"
+            className="flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-2xl px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-blue-900"
+            onClick={() => document.getElementById('imageFile')?.click()}
+            aria-label="Select Image"
+          >
+            <span role="img" aria-label="camera">📷</span>
+          </button>
           <input
             id="imageFile"
             type="file"
@@ -98,22 +140,6 @@ const NoteForm: React.FC<NoteFormProps> = ({ onCreateNote }) => {
             className="hidden"
           />
         </div>
-        <div>
-          <label className="block mb-1 font-medium">Icon:</label>
-          <Button type="button" className="bg-blue-500 text-white px-3 py-1 rounded" onClick={() => setIconPickerOpen(true)}>
-            {icon ? `Change Icon (${icon})` : 'Select Icon'}
-          </Button>
-          {iconPickerOpen && (
-            <div className="mt-2 flex flex-wrap gap-2 bg-white dark:bg-gray-800 p-2 rounded shadow border border-gray-200 dark:border-gray-700">
-              {["😊","⭐","🔥","💡","📷","📚","✅","❗","🎉","📝"].map((ic) => (
-                <button type="button" key={ic} className="text-2xl p-2 hover:bg-blue-100 dark:hover:bg-blue-900 rounded" onClick={() => handleIconSelect(ic)}>{ic}</button>
-              ))}
-            </div>
-          )}
-        </div>
-        <Button type="submit" >
-          Add Note
-        </Button>
       </form>
     </div>
   );

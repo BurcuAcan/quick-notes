@@ -6,6 +6,7 @@ import authRouter from "./routes/auth.routes";
 import userRouter from "./routes/user.routes";
 import { protect } from "./middleware/authMiddleware";
 import { connectDB } from "./lib/db";
+import path from "path";
 
 dotenv.config();
 
@@ -20,6 +21,8 @@ app.use("/api/auth", authRouter);
 app.use("/api/notes", protect, notesRouter);
 
 app.use("/api/users", protect, userRouter);
+
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 connectDB().then(() => {
   app.listen(PORT, () => {

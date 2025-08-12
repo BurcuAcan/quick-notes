@@ -6,11 +6,15 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
+    "@types/multer": "^2.0.0",
     "concurrently": "^9.2.0"
   },
   "workspaces": [
     "client",
     "server"
   ],
-  "private": true
+  "private": true,
+  "dependencies": {
+    "multer": "^2.0.2"
+  }
 }
