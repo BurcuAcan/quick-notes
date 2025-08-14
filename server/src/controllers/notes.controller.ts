@@ -2,6 +2,7 @@ import { Request, Response, RequestHandler } from "express";
 import Note from "../models/Note";
 import NoteShareRequest from "../models/NoteShareRequest";
 import User from "../models/User";
+import { analyzeContent } from "../services/aiAnalysis.service";
 
 // GET /api/notes
 export const getNotes = async (req: Request, res: Response) => {
@@ -23,7 +24,25 @@ export const getNotes = async (req: Request, res: Response) => {
 export const createNote = async (req: Request, res: Response) => {
   try {
     const { title, content, imageUrl, icon } = req.body;
-    const note = new Note({ title, content, imageUrl, icon, owner: req.user._id });
+    
+    // Run AI analysis
+    const analysis = analyzeContent(title, content);
+    
+    const note = new Note({ 
+      title, 
+      content, 
+      imageUrl, 
+      icon, 
+      owner: req.user._id,
+      sentiment: analysis.sentiment,
+      category: analysis.category,
+      aiAnalysis: {
+        processedAt: new Date(),
+        keywords: analysis.keywords,
+        summary: analysis.summary
+      }
+    });
+    
     await note.save();
     res.status(201).json(note);
   } catch (error) {
@@ -157,10 +176,29 @@ export const updateNote: RequestHandler = async (req, res) => {
     ) {
       return res.status(403).json({ message: "No edit permission" });
     }
+    
+    // Re-run AI analysis if content changed
+    let shouldAnalyze = false;
+    if (title !== note.title || content !== note.content) {
+      shouldAnalyze = true;
+    }
+    
     note.title = title;
     note.content = content;
     if (imageUrl !== undefined) note.imageUrl = imageUrl;
     if (icon !== undefined) note.icon = icon;
+    
+    if (shouldAnalyze) {
+      const analysis = analyzeContent(title, content);
+      note.sentiment = analysis.sentiment;
+      note.category = analysis.category;
+      note.aiAnalysis = {
+        processedAt: new Date(),
+        keywords: analysis.keywords,
+        summary: analysis.summary
+      };
+    }
+    
     await note.save();
     res.json(note);
   } catch (error) {
@@ -180,5 +218,107 @@ export const deleteNote: RequestHandler = async (req, res) => {
     res.status(204).send();
   } catch (error) {
     res.status(400).json({ message: "Invalid request" });
+  }
+};
+
+// GET /api/notes/analytics
+export const getNotesAnalytics: RequestHandler = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    
+    // Get user's notes (owned + shared)
+    const notes = await Note.find({
+      $or: [
+        { owner: userId },
+        { sharedWith: userId }
+      ]
+    });
+
+    // Calculate analytics
+    const analytics = {
+      totalNotes: notes.length,
+      sentimentDistribution: {
+        positive: notes.filter(n => n.sentiment?.label === 'positive').length,
+        negative: notes.filter(n => n.sentiment?.label === 'negative').length,
+        neutral: notes.filter(n => n.sentiment?.label === 'neutral').length
+      },
+      categoryDistribution: notes.reduce((acc: { [key: string]: number }, note) => {
+        if (note.category) {
+          acc[note.category] = (acc[note.category] || 0) + 1;
+        }
+        return acc;
+      }, {}),
+      averageSentimentScore: notes.length > 0 
+        ? notes.reduce((sum, note) => sum + (note.sentiment?.score || 0), 0) / notes.length
+        : 0,
+      topKeywords: notes
+        .flatMap(note => note.aiAnalysis?.keywords || [])
+        .reduce((acc: { [key: string]: number }, keyword) => {
+          acc[keyword] = (acc[keyword] || 0) + 1;
+          return acc;
+        }, {}),
+      recentActivity: {
+        thisWeek: notes.filter(n => 
+          new Date(n.updatedAt).getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000
+        ).length,
+        thisMonth: notes.filter(n => 
+          new Date(n.updatedAt).getTime() > Date.now() - 30 * 24 * 60 * 60 * 1000
+        ).length
+      }
+    };
+
+    // Convert topKeywords to sorted array
+    const sortedKeywords = Object.entries(analytics.topKeywords)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 10)
+      .map(([keyword, count]) => ({ keyword, count }));
+
+    res.json({
+      ...analytics,
+      topKeywords: sortedKeywords
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// POST /api/notes/reanalyze
+export const reanalyzeAllNotes: RequestHandler = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    
+    // Get user's notes without sentiment analysis
+    const notes = await Note.find({
+      $or: [
+        { owner: userId },
+        { sharedWith: userId }
+      ]
+    });
+
+    let updated = 0;
+    
+    for (const note of notes) {
+      // Re-run AI analysis for all notes
+      const analysis = analyzeContent(note.title, note.content);
+      
+      note.sentiment = analysis.sentiment;
+      note.category = analysis.category;
+      note.aiAnalysis = {
+        processedAt: new Date(),
+        keywords: analysis.keywords,
+        summary: analysis.summary
+      };
+      
+      await note.save();
+      updated++;
+    }
+
+    res.json({ 
+      message: `Successfully reanalyzed ${updated} notes`,
+      updated 
+    });
+  } catch (error) {
+    console.error('Reanalysis error:', error);
+    res.status(500).json({ message: "Server error during reanalysis" });
   }
 };

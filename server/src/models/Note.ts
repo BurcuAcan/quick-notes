@@ -9,6 +9,17 @@ export interface INote extends Document {
   sharedWith: mongoose.Types.ObjectId[];
   imageUrl?: string;
   icon?: string;
+  sentiment?: {
+    score: number;
+    label: 'positive' | 'negative' | 'neutral';
+    confidence: number;
+  };
+  category?: string;
+  aiAnalysis?: {
+    processedAt: Date;
+    keywords: string[];
+    summary?: string;
+  };
 }
 
 const NoteSchema = new Schema<INote>({
@@ -18,6 +29,17 @@ const NoteSchema = new Schema<INote>({
   sharedWith: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   imageUrl: { type: String },
   icon: { type: String },
+  sentiment: {
+    score: { type: Number },
+    label: { type: String, enum: ['positive', 'negative', 'neutral'] },
+    confidence: { type: Number }
+  },
+  category: { type: String },
+  aiAnalysis: {
+    processedAt: { type: Date },
+    keywords: [{ type: String }],
+    summary: { type: String }
+  }
 }, { timestamps: true });
 
 export default mongoose.model<INote>('Note', NoteSchema);

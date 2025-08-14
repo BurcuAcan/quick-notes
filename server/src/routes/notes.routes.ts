@@ -9,6 +9,8 @@ import {
   listNoteShareRequests,
   acceptNoteShareRequest,
   rejectNoteShareRequest,
+  getNotesAnalytics,
+  reanalyzeAllNotes,
 } from "../controllers/notes.controller";
 import { upload, uploadImage } from "../controllers/upload.controller";
 import authMiddleware from "../middleware/authMiddleware";
@@ -16,6 +18,8 @@ import authMiddleware from "../middleware/authMiddleware";
 const router = express.Router();
 
 router.get("/", getNotes);
+router.get("/analytics", getNotesAnalytics);
+router.post("/reanalyze", reanalyzeAllNotes);
 router.post("/", createNote);
 router.put("/:id", updateNote);
 router.delete("/:id", deleteNote);

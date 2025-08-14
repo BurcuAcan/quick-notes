@@ -13,6 +13,17 @@ interface Note {
   content: string;
   imageUrl?: string;
   icon?: string;
+  sentiment?: {
+    score: number;
+    label: 'positive' | 'negative' | 'neutral';
+    confidence: number;
+  };
+  category?: string;
+  aiAnalysis?: {
+    processedAt: string;
+    keywords: string[];
+    summary?: string;
+  };
 }
 
 interface NoteCardProps {
@@ -178,6 +189,41 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete, onSave, onC
           {note.imageUrl && (
             <img src={`http://localhost:4000${note.imageUrl}`} alt="Note" className="mb-2 rounded-lg max-h-40 w-auto" />
           )}
+          
+          {/* AI Analysis Display */}
+          {(note.sentiment || note.category) && (
+            <div className="flex flex-wrap gap-2 mb-2">
+              {note.sentiment && (
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  note.sentiment.label === 'positive' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
+                  note.sentiment.label === 'negative' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
+                  'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+                }`}>
+                  {note.sentiment.label === 'positive' ? '😊' : note.sentiment.label === 'negative' ? '😞' : '😐'} 
+                  {note.sentiment.label} ({Math.round(note.sentiment.confidence * 100)}%)
+                </span>
+              )}
+              {note.category && (
+                <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                  📁 {note.category}
+                </span>
+              )}
+            </div>
+          )}
+          
+          {/* Keywords */}
+          {note.aiAnalysis?.keywords && note.aiAnalysis.keywords.length > 0 && (
+            <div className="mb-2">
+              <div className="flex flex-wrap gap-1">
+                {note.aiAnalysis.keywords.slice(0, 3).map((keyword, index) => (
+                  <span key={index} className="px-2 py-1 rounded text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+                    #{keyword}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          
           <p className="mb-2">{note.content}</p>
           <Button onClick={() => setEditModalOpen(true)} className="bg-yellow-400 text-black mr-2">
             Edit

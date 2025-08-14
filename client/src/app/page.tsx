@@ -7,6 +7,7 @@ import NoteForm from '../components/organisms/NoteForm';
 import NoteList from '../components/organisms/NoteList';
 import Button from '../components/atoms/Button';
 import NotificationBell from '../components/organisms/NotificationBell';
+import AnalyticsDashboard from '../components/organisms/AnalyticsDashboard';
 
 interface Note {
   _id: string;
@@ -14,12 +15,24 @@ interface Note {
   content: string;
   imageUrl?: string;
   icon?: string;
+  sentiment?: {
+    score: number;
+    label: 'positive' | 'negative' | 'neutral';
+    confidence: number;
+  };
+  category?: string;
+  aiAnalysis?: {
+    processedAt: string;
+    keywords: string[];
+    summary?: string;
+  };
 }
 
 export default function Home() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [username, setUsername] = useState<string>('');
+  const [showAnalytics, setShowAnalytics] = useState<boolean>(false);
   const router = useRouter();
 
   const getAuthHeaders = () => {
@@ -141,14 +154,27 @@ export default function Home() {
                 <span className="font-bold text-blue-700 dark:text-blue-200 text-base ml-2">{username}</span>
               </div>
             )}
-            <Button onClick={handleLogout} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl shadow transition-colors w-full sm:w-auto">
-              Logout
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                onClick={() => setShowAnalytics(!showAnalytics)} 
+                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl shadow transition-colors w-full sm:w-auto"
+              >
+                {showAnalytics ? 'Hide Analytics' : 'Show Analytics'}
+              </Button>
+              <Button onClick={handleLogout} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl shadow transition-colors w-full sm:w-auto">
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
         <div className="mb-6 sm:mb-8">
           <NoteForm onCreateNote={createNote} />
         </div>
+        {showAnalytics && (
+          <div className="mb-6 sm:mb-8">
+            <AnalyticsDashboard />
+          </div>
+        )}
         <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 p-4 sm:p-6">
           <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 text-gray-700 dark:text-gray-200">Your Notes</h2>
           <NoteList
