@@ -40,9 +40,9 @@ const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, error, message, tok
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-blue-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="w-full max-w-md p-8 rounded-2xl shadow-2xl bg-white border border-gray-100 dark:bg-gray-900 dark:border-gray-800">
-        <h1 className="text-4xl font-extrabold text-blue-600 mb-8 text-center tracking-tight drop-shadow-sm dark:text-blue-400">
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="w-full max-w-md p-8 rounded-2xl shadow-2xl bg-card border border-border">
+        <h1 className="text-4xl font-extrabold text-primary mb-8 text-center tracking-tight drop-shadow-sm">
           {type === 'login' ? 'Login' : type === 'register' ? 'Register' : type === 'forgot-password' ? 'Forgot Password' : 'Reset Password'}
         </h1>
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -105,28 +105,28 @@ const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit, error, message, tok
           )}
           {error && <ErrorMessage message={error} />}
           {message && <SuccessMessage message={message} />}
-          <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 transition-colors font-semibold text-lg py-2 rounded-xl shadow dark:bg-blue-700 dark:hover:bg-blue-800">
+          <Button type="submit" className="w-full bg-primary hover:bg-secondary transition-colors font-semibold text-lg py-2 rounded-xl shadow">
             {type === 'login' ? 'Login' : type === 'register' ? 'Register' : type === 'forgot-password' ? 'Request Reset' : 'Reset Password'}
           </Button>
         </form>
         {type === 'login' && (
-          <p className="mt-8 text-center text-gray-600 dark:text-gray-300">
-            Don&apos;t have an account? <Link href="/auth/register" className="text-blue-500 hover:underline dark:text-blue-300">Register here</Link>
+          <p className="mt-8 text-center text-muted">
+            Don&apos;t have an account? <Link href="/auth/register" className="text-primary hover:underline">Register here</Link>
           </p>
         )}
         {type === 'login' && (
-          <p className="mt-2 text-center text-gray-600 dark:text-gray-300">
-            <Link href="/auth/forgot-password" className="text-blue-500 hover:underline dark:text-blue-300">Forgot Password?</Link>
+          <p className="mt-2 text-center text-muted">
+            <Link href="/auth/forgot-password" className="text-primary hover:underline">Forgot Password?</Link>
           </p>
         )}
         {type === 'register' && (
-          <p className="mt-8 text-center text-gray-600 dark:text-gray-300">
-            Already have an account? <Link href="/auth/login" className="text-blue-500 hover:underline dark:text-blue-300">Login here</Link>
+          <p className="mt-8 text-center text-muted">
+            Already have an account? <Link href="/auth/login" className="text-primary hover:underline">Login here</Link>
           </p>
         )}
         {type === 'forgot-password' && (
-          <p className="mt-8 text-center text-gray-600 dark:text-gray-300">
-            Remember your password? <Link href="/auth/login" className="text-blue-500 hover:underline dark:text-blue-300">Login here</Link>
+          <p className="mt-8 text-center text-muted">
+            Remember your password? <Link href="/auth/login" className="text-primary hover:underline">Login here</Link>
           </p>
         )}
       </div>

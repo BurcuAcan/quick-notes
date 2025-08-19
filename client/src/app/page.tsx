@@ -7,6 +7,7 @@ import NoteForm from '../components/organisms/NoteForm';
 import NoteList from '../components/organisms/NoteList';
 import Button from '../components/atoms/Button';
 import NotificationBell from '../components/organisms/NotificationBell';
+import ThemeToggleButton from '../components/atoms/ThemeToggleButton';
 import AnalyticsDashboard from '../components/organisms/AnalyticsDashboard';
 
 interface Note {
@@ -138,36 +139,39 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex flex-col items-center justify-start py-10">
-      <div className="fixed top-6 right-8 z-50">
-        <NotificationBell onNoteShared={fetchNotes} />
-      </div>
-      <div className="w-full max-w-2xl mx-auto px-2 sm:px-0">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-blue-600 dark:text-blue-400 tracking-tight drop-shadow-sm mb-6 sm:mb-8">Quick Notes</h1>
+  <div className="min-h-screen bg-background flex flex-col items-center justify-start py-10">
+  <div className="fixed top-6 right-6 z-50">
+    <NotificationBell onNoteShared={fetchNotes} />
+  </div>
+  <div className="w-full max-w-2xl mx-auto px-2 sm:px-0">
+  <h1 className="text-2xl sm:text-3xl font-extrabold text-primary tracking-tight drop-shadow-sm mb-6 sm:mb-8">Quick Notes</h1>
         <div className="flex flex-col mb-6 sm:mb-8">
           <div className="flex justify-between sm:items-center gap-4 sm:gap-0 mb-4">
             {username && (
-              <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-blue-400 via-blue-300 to-blue-200 dark:from-blue-900 dark:via-blue-800 dark:to-blue-700 rounded-xl border border-blue-300 dark:border-blue-800 shadow-lg w-fit mx-auto sm:mx-0">
-                <div className="w-8 h-8 rounded-full bg-white dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-300 font-bold text-md border-2 border-blue-400 dark:border-blue-700 shadow">
+              <div className="flex items-center gap-2 px-3 py-1 bg-secondary rounded-xl border border-border shadow-lg w-fit mx-auto sm:mx-0">
+                <div className="w-8 h-8 rounded-full bg-card flex items-center justify-center text-primary font-bold text-md border-2 border-primary shadow">
                   {username.slice(0, 2).toUpperCase()}
                 </div>
-                <span className="font-bold text-blue-700 dark:text-blue-200 text-base ml-2">{username}</span>
+                <span className="hidden sm:inline font-bold text-foreground text-base ml-2">{username}</span>
               </div>
             )}
             <div className="flex gap-2">
-              <Button 
-                onClick={() => setShowAnalytics(!showAnalytics)} 
-                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl shadow transition-colors w-full sm:w-auto"
+              <Button
+                onClick={() => setShowAnalytics(!showAnalytics)}
+                className="bg-primary hover:bg-secondary text-primary-foreground px-4 py-2 rounded-xl shadow transition-colors w-full sm:w-auto text-sm sm:text-base"
               >
                 {showAnalytics ? 'Hide Analytics' : 'Show Analytics'}
               </Button>
-              <Button onClick={handleLogout} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl shadow transition-colors w-full sm:w-auto">
+              <Button onClick={handleLogout} className="bg-danger hover:bg-accent text-primary-foreground px-4 py-2 rounded-xl shadow transition-colors w-full sm:w-auto text-sm sm:text-base">
                 Logout
               </Button>
+              <div className="flex items-center">
+                <ThemeToggleButton />
+              </div>
             </div>
           </div>
         </div>
-        <div className="mb-6 sm:mb-8">
+  <div className="mb-6 sm:mb-8">
           <NoteForm onCreateNote={createNote} />
         </div>
         {showAnalytics && (
@@ -175,8 +179,8 @@ export default function Home() {
             <AnalyticsDashboard />
           </div>
         )}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 p-4 sm:p-6">
-          <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 text-gray-700 dark:text-gray-200">Your Notes</h2>
+        <div className="bg-card rounded-2xl shadow-xl border border-border p-4 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 text-foreground">Your Notes</h2>
           <NoteList
             notes={notes}
             onEdit={startEditing}

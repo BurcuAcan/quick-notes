@@ -80,7 +80,7 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete, onSave, onC
   };
 
   return (
-    <div className="border border-gray-200 p-4 rounded-lg shadow-md">
+    <div className="border border-border p-4 rounded-lg shadow-md bg-card text-foreground">
       <ShareNoteModal
         isOpen={isShareModalOpen}
         onClose={() => setShareModalOpen(false)}
@@ -121,25 +121,25 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete, onSave, onC
           type="text"
           value={editedTitle}
           onChange={(e) => setEditedTitle(e.target.value)}
-          className="mb-2 w-full border border-gray-300 dark:border-gray-700 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-900"
+          className="mb-2 w-full border border-border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary bg-card text-foreground"
         />
         <div className="relative mb-2">
           <Textarea
             value={editedContent}
             onChange={(e) => setEditedContent(e.target.value)}
             rows={4}
-            className="w-full pr-10 modal-content-textarea border border-gray-300 dark:border-gray-700 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-900"
+            className="w-full pr-10 modal-content-textarea border border-border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary bg-card text-foreground"
           />
           <button
             type="button"
-            className="absolute right-2 top-2 text-2xl p-1 bg-gray-100 dark:bg-gray-800 rounded hover:bg-blue-100 dark:hover:bg-blue-900"
+            className="absolute right-2 top-2 text-2xl p-1 bg-muted rounded hover:bg-secondary"
             onClick={() => setIconPickerOpen((open) => !open)}
             aria-label="Pick icon"
           >
             {editedIcon || "😊"}
           </button>
           {iconPickerOpen && (
-            <div className="absolute right-0 top-10 z-10 flex flex-wrap gap-2 bg-white dark:bg-gray-800 p-2 rounded shadow border border-gray-200 dark:border-gray-700">
+            <div className="absolute right-0 top-10 z-10 flex flex-wrap gap-2 bg-card p-2 rounded shadow border border-border">
               {["😊", "⭐", "🔥", "💡", "📷", "📚", "✅", "❗", "🎉", "📝", "😂", "👍", "🙏", "🥳", "😎", "🤔", "😃", "😢", "😡", "❤️", "🚀"].map((ic) => (
                 <button type="button" key={ic} className="text-2xl p-2 hover:bg-blue-100 dark:hover:bg-blue-900 rounded" onClick={() => {
                   setEditedIcon(ic);
@@ -172,7 +172,7 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete, onSave, onC
           </Button>
           <button
             type="button"
-            className="flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-2xl px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-blue-900"
+            className="flex items-center justify-center bg-muted text-2xl px-3 py-2 rounded hover:bg-secondary"
             onClick={() => document.getElementById(`edit-image-input-${note._id}`)?.click()}
             aria-label="Select Image"
           >
@@ -189,17 +189,16 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete, onSave, onC
           {note.imageUrl && (
             <img src={`http://localhost:4000${note.imageUrl}`} alt="Note" className="mb-2 rounded-lg max-h-40 w-auto" />
           )}
-          
+
           {/* AI Analysis Display */}
           {(note.sentiment || note.category) && (
             <div className="flex flex-wrap gap-2 mb-2">
               {note.sentiment && (
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                  note.sentiment.label === 'positive' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${note.sentiment.label === 'positive' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
                   note.sentiment.label === 'negative' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
-                  'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
-                }`}>
-                  {note.sentiment.label === 'positive' ? '😊' : note.sentiment.label === 'negative' ? '😞' : '😐'} 
+                    'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+                  }`}>
+                  {note.sentiment.label === 'positive' ? '😊' : note.sentiment.label === 'negative' ? '😞' : '😐'}
                   {note.sentiment.label} ({Math.round(note.sentiment.confidence * 100)}%)
                 </span>
               )}
@@ -210,7 +209,7 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete, onSave, onC
               )}
             </div>
           )}
-          
+
           {/* Keywords */}
           {note.aiAnalysis?.keywords && note.aiAnalysis.keywords.length > 0 && (
             <div className="mb-2">
@@ -223,15 +222,15 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete, onSave, onC
               </div>
             </div>
           )}
-          
+
           <p className="mb-2">{note.content}</p>
-          <Button onClick={() => setEditModalOpen(true)} className="bg-yellow-400 text-black mr-2">
+          <Button onClick={() => setEditModalOpen(true)} className="bg-accent text-foreground mr-2">
             Edit
           </Button>
-          <Button onClick={() => onDelete(note._id)} className="bg-red-600 text-white mr-2">
+          <Button onClick={() => onDelete(note._id)} className="bg-danger text-foreground mr-2">
             Delete
           </Button>
-          <Button onClick={() => setShareModalOpen(true)}>
+          <Button onClick={() => setShareModalOpen(true)} className="bg-primary text-foreground">
             Share
           </Button>
         </>

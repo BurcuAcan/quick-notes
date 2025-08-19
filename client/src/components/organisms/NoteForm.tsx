@@ -70,8 +70,8 @@ const NoteForm: React.FC<NoteFormProps> = ({ onCreateNote }) => {
   };
 
   return (
-    <div className="mb-5 border border-gray-200 p-4 rounded-lg">
-      <h2 className="text-xl font-bold mb-4">Add New Note</h2>
+  <div className="mb-5 border border-border p-4 rounded-lg bg-card text-foreground">
+  <h2 className="text-xl font-bold mb-4 text-primary">Add New Note</h2>
       <form onSubmit={handleSubmit} className="space-y-3">
         <div>
           <label htmlFor="newNoteTitle" className="block mb-1 font-medium">
@@ -101,18 +101,18 @@ const NoteForm: React.FC<NoteFormProps> = ({ onCreateNote }) => {
               onChange={(e) => setNewNoteContent(e.target.value)}
               rows={4}
               required
-              className="w-full border border-gray-300 dark:border-gray-700 rounded px-3 py-2 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-900"
+              className="w-full border border-border rounded px-3 py-2 pr-12 focus:outline-none focus:ring-2 focus:ring-primary bg-card text-foreground"
             />
             <button
               type="button"
-              className="absolute right-2 top-2 text-2xl p-1 bg-gray-100 dark:bg-gray-800 rounded hover:bg-blue-100 dark:hover:bg-blue-900"
+              className="absolute right-2 top-2 text-2xl p-1 bg-muted rounded hover:bg-secondary"
               onClick={() => setIconPickerOpen((open) => !open)}
               aria-label="Pick icon"
             >
               {icon || "😊"}
             </button>
             {iconPickerOpen && (
-              <div className="absolute right-0 top-10 z-10 flex flex-wrap gap-2 bg-white dark:bg-gray-800 p-2 rounded shadow border border-gray-200 dark:border-gray-700">
+              <div className="absolute right-0 top-10 z-10 flex flex-wrap gap-2 bg-card p-2 rounded shadow border border-border">
                 {["😊", "⭐", "🔥", "💡", "📷", "📚", "✅", "❗", "🎉", "📝", "😂", "👍", "🙏", "🥳", "😎", "🤔", "😃", "😢", "😡", "❤️", "🚀"].map((ic) => (
                   <button type="button" key={ic} className="text-2xl p-2 hover:bg-blue-100 dark:hover:bg-blue-900 rounded" onClick={() => handleIconSelect(ic)}>{ic}</button>
                 ))}
@@ -121,12 +121,12 @@ const NoteForm: React.FC<NoteFormProps> = ({ onCreateNote }) => {
           </div>
         </div>
         <div className="flex items-center gap-2 mt-4">
-          <Button type="submit" className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded font-semibold">
+          <Button type="submit" className="flex items-center gap-2 bg-primary text-foreground px-4 py-2 rounded font-semibold">
             Add Note
           </Button>
           <button
             type="button"
-            className="flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-2xl px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-blue-900"
+            className="flex items-center justify-center bg-muted text-2xl px-3 py-2 rounded hover:bg-secondary"
             onClick={() => document.getElementById('imageFile')?.click()}
             aria-label="Select Image"
           >
